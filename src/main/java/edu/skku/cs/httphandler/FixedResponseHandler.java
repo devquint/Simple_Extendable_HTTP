@@ -8,7 +8,7 @@ import edu.skku.cs.httphandler.core.ResponseItem;
 public class FixedResponseHandler extends HttpHandlerBase implements HttpStatusCode {
     public final String fixed_response;
 
-    public FixedResponseHandler(String response){
+    public FixedResponseHandler(String response) {
         this.fixed_response = response;
     }
 

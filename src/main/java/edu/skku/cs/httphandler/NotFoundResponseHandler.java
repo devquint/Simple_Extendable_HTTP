@@ -11,11 +11,11 @@ public class NotFoundResponseHandler extends HttpHandlerBase implements HttpStat
 
     public final String notFoundMessage;
 
-    public NotFoundResponseHandler(){
+    public NotFoundResponseHandler() {
         this.notFoundMessage = DEFAULT_NOT_FOUND_MESSAGE;
     }
 
-    public NotFoundResponseHandler(String notFoundMessage){
+    public NotFoundResponseHandler(String notFoundMessage) {
         this.notFoundMessage = notFoundMessage;
     }
 

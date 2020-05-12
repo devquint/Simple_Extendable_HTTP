@@ -29,21 +29,21 @@ public class HttpServerManager {
         server.setExecutor(httpExecutor);
     }
 
-    public void start(){
+    public void start() {
         server.start();
     }
 
-    public void stop(){
+    public void stop() {
         server.stop(0); // 인자는 delay
         httpExecutor.shutdown();
     }
 
-    public boolean registerContext(String path, HttpHandlerBase handler){
-        if(!path.startsWith("/")){
+    public boolean registerContext(String path, HttpHandlerBase handler) {
+        if (!path.startsWith("/")) {
             System.out.println("Registering " + path + " failed. Path should starts with '/'");
             return false;
         }
-        if(contexts.containsKey(path)){
+        if (contexts.containsKey(path)) {
             System.out.println("Registering " + path + " failed. Already " + path + " exists. Try after delete.");
             return false;
         }
@@ -53,12 +53,12 @@ public class HttpServerManager {
         return true;
     }
 
-    public boolean unregisterContext(String path){
-        if(!path.startsWith("/")){
+    public boolean unregisterContext(String path) {
+        if (!path.startsWith("/")) {
             System.out.println("Unregistering " + path + " failed. Path should starts with '/'");
             return false;
         }
-        if(!contexts.containsKey(path)){
+        if (!contexts.containsKey(path)) {
             System.out.println("Unregistering " + path + " failed. Path " + path + " not exists in context");
             return false;
         }

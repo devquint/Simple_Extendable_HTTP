@@ -13,8 +13,8 @@ public abstract class HttpHandlerBase implements HttpHandler {
     /**
      * 핸들러 이벤트 발생 시 String으로 변환 후 호출
      *
-     * @param body body가 UTF-8로 변환된 문자열
-     * @param method HTTP method
+     * @param body    body가 UTF-8로 변환된 문자열
+     * @param method  HTTP method
      * @param headers HTTP headers
      * @return {@link ResponseItem} 객체
      */

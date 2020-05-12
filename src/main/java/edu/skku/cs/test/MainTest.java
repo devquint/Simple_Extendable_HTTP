@@ -5,7 +5,6 @@ import com.google.api.client.testing.http.HttpTesting;
 import com.google.api.client.testing.http.MockHttpTransport;
 import com.google.api.client.testing.http.MockLowLevelHttpRequest;
 import com.google.api.client.testing.http.MockLowLevelHttpResponse;
-import com.sun.net.httpserver.HttpServer;
 import edu.skku.cs.HttpServerManager;
 import edu.skku.cs.httphandler.FixedResponseHandler;
 import edu.skku.cs.httphandler.ForbiddenResponseHandler;
@@ -16,12 +15,9 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.junit.*;
 
-import javax.swing.text.html.parser.Entity;
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.concurrent.Executors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -87,11 +83,11 @@ public class MainTest {
                 ":" + PORT + TEST_PUT_ONLY_PATH);
 
         String[] methods = {"get", "put", "post", "delete"};
-        for(String method: methods){
+        for (String method : methods) {
             method = method.toLowerCase();
 
             HttpUriRequest request;
-            switch (method){
+            switch (method) {
                 case "get":
                     request = new HttpGet(uri);
                     break;
@@ -117,13 +113,13 @@ public class MainTest {
             String responseMessage = EntityUtils.toString(entity, "utf-8");
 
             System.out.println(method + " request " + request.getURI() + " responded " +
-                     statusCode + ": \n" + responseMessage);
+                    statusCode + ": \n" + responseMessage);
 
             String expectedMessage = method.equals("put") ? TEST_PUT_ONLY_PUT_MESSAGE : TEST_PUT_ONLY_FORIBDDEN_MESSAGE;
             assertEquals(expectedMessage, responseMessage);
         }
 
-   }
+    }
 
     @After
     public void unregisterPutOnlyHandler() {

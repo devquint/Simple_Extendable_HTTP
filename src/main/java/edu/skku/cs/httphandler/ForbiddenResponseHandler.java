@@ -11,11 +11,11 @@ public class ForbiddenResponseHandler extends HttpHandlerBase implements HttpSta
 
     public final String forbiddenMessage;
 
-    public ForbiddenResponseHandler(){
+    public ForbiddenResponseHandler() {
         this.forbiddenMessage = DEFAULT_FORBIDDEN_MESSAGE;
     }
 
-    public ForbiddenResponseHandler(String forbiddenMessage){
+    public ForbiddenResponseHandler(String forbiddenMessage) {
         this.forbiddenMessage = forbiddenMessage;
     }
 
