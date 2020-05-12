@@ -6,16 +6,17 @@ import com.google.api.client.testing.http.MockHttpTransport;
 import com.google.api.client.testing.http.MockLowLevelHttpRequest;
 import com.google.api.client.testing.http.MockLowLevelHttpResponse;
 import com.sun.net.httpserver.HttpServer;
+import edu.skku.cs.HttpServerManager;
 import edu.skku.cs.httphandler.FixedResponseHandler;
 import edu.skku.cs.httphandler.ForbiddenResponseHandler;
+import edu.skku.cs.httphandler.core.HttpHandlerByMethod;
 import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.*;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.junit.*;
 
+import javax.swing.text.html.parser.Entity;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
@@ -34,12 +35,9 @@ public class MainTest {
 
     @BeforeClass
     public static void serverSetup() throws IOException {
-        testServer = HttpServer.create(new InetSocketAddress(HOST_IP, PORT), 0);
-        assertNotNull(testServer);
-        httpExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        assertNotNull(httpExecutor);
-        testServer.setExecutor(httpExecutor);
-        testServer.start();
+        serverManager = new HttpServerManager(HOST_IP, PORT);
+        assertNotNull(serverManager);
+        serverManager.start();
     }
 
     public static final String TEST_FIXED_MESSAGE = "FIXed";
@@ -47,7 +45,7 @@ public class MainTest {
 
     @Before
     public void registerFixedHandler() {
-        testServer.createContext(TEST_FIXED_PATH, new FixedResponseHandler(TEST_FIXED_MESSAGE));
+        serverManager.registerContext(TEST_FIXED_PATH, new FixedResponseHandler(TEST_FIXED_MESSAGE));
     }
 
     @Test
@@ -56,21 +54,82 @@ public class MainTest {
                 ":" + PORT + TEST_FIXED_PATH);
         HttpUriRequest request = new HttpGet(uri);
         CloseableHttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
+        int statusCode = httpResponse.getStatusLine().getStatusCode();
         HttpEntity entity = httpResponse.getEntity();
         String responseMessage = EntityUtils.toString(entity, "utf-8");
 
-        System.out.println(request.getURI() + " responded: \n" + responseMessage);
+        System.out.println(request.getURI() + " responded " + statusCode + ": \n" + responseMessage);
         assertEquals(TEST_FIXED_MESSAGE, responseMessage);
     }
 
     @After
     public void unregisterFixedHandler() {
-        testServer.removeContext(TEST_FIXED_PATH);
+        serverManager.unregisterContext(TEST_FIXED_PATH);
     }
 
-    serverManager.registerContext("/onlyput", new HttpHandlerByMethod(
-                new ForbiddenResponseHandler(), new ForbiddenResponseHandler(),
-                new FixedResponseHandler("Hi, put."), new ForbiddenResponseHandler()));
+
+    public static final String TEST_PUT_ONLY_PUT_MESSAGE = "Oh, you are put";
+    public static final String TEST_PUT_ONLY_FORIBDDEN_MESSAGE = "Oops. you are not put";
+    public static final String TEST_PUT_ONLY_PATH = "/put_only";
+
+    @Before
+    public void registerPutOnlyHandler() {
+        serverManager.registerContext(TEST_PUT_ONLY_PATH, new HttpHandlerByMethod(
+                new ForbiddenResponseHandler(TEST_PUT_ONLY_FORIBDDEN_MESSAGE),
+                new ForbiddenResponseHandler(TEST_PUT_ONLY_FORIBDDEN_MESSAGE),
+                new FixedResponseHandler(TEST_PUT_ONLY_PUT_MESSAGE),
+                new ForbiddenResponseHandler(TEST_PUT_ONLY_FORIBDDEN_MESSAGE)));
+    }
+
+    @Test
+    public void PutOnlyTest() throws IOException, URISyntaxException {
+        URI uri = new URI(HOST_HTTP_HTTPS + (HOST_ADDR == "" ? "localhost" : HOST_ADDR) +
+                ":" + PORT + TEST_PUT_ONLY_PATH);
+
+        String[] methods = {"get", "put", "post", "delete"};
+        for(String method: methods){
+            method = method.toLowerCase();
+
+            HttpUriRequest request;
+            switch (method){
+                case "get":
+                    request = new HttpGet(uri);
+                    break;
+                case "put":
+                    request = new HttpPut(uri);
+                    break;
+                case "post":
+                    request = new HttpPost(uri);
+                    break;
+                case "delete":
+                    request = new HttpDelete(uri);
+                    break;
+                default:
+                    request = null;
+                    System.out.println("Something went wrong in PutOnlyTest:for-loop");
+                    break;
+            }
+            assert request != null;
+
+            CloseableHttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
+            int statusCode = httpResponse.getStatusLine().getStatusCode();
+            HttpEntity entity = httpResponse.getEntity();
+            String responseMessage = EntityUtils.toString(entity, "utf-8");
+
+            System.out.println(method + " request " + request.getURI() + " responded " +
+                     statusCode + ": \n" + responseMessage);
+
+            String expectedMessage = method.equals("put") ? TEST_PUT_ONLY_PUT_MESSAGE : TEST_PUT_ONLY_FORIBDDEN_MESSAGE;
+            assertEquals(expectedMessage, responseMessage);
+        }
+
+   }
+
+    @After
+    public void unregisterPutOnlyHandler() {
+        serverManager.unregisterContext(TEST_PUT_ONLY_PATH);
+    }
+
 
     @Ignore("Template edu.skku.cs.test code for Mocking HTTP response ignored.")
     @Test
@@ -97,7 +156,6 @@ public class MainTest {
 
     @AfterClass
     public static void serverClose() {
-        testServer.stop(0); // 인자는 delay
-        httpExecutor.shutdown();
+        serverManager.stop();
     }
 }

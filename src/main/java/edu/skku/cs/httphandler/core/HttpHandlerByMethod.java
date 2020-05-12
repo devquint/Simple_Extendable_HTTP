@@ -20,6 +20,7 @@ public class HttpHandlerByMethod extends HttpHandlerBase {
 
     @Override
     public ResponseItem handler(String body, String method, Headers headers) {
+        method = method.toLowerCase();
         switch (method) {
             case "post":
                 return postHandler.handler(body, method, headers);
