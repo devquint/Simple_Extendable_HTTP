@@ -1,4 +1,4 @@
-package httphandler.core;
+package edu.skku.cs.httphandler.core;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
@@ -9,12 +9,12 @@ public class ResponseItem {
     public final int header;
     public final byte[] response;
 
-    ResponseItem(int header, byte[] response){
+    public ResponseItem(int header, byte[] response){
         this.header = header;
         this.response = response;
     }
 
-    ResponseItem(int header, String response){
+    public ResponseItem(int header, String response){
         this.header = header;
         byte[] tmpByte;
         try {
