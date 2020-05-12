@@ -1,4 +1,4 @@
-package httphandler.core;
+package edu.skku.cs.httphandler.core;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;

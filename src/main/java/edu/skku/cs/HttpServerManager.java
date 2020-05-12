@@ -1,6 +1,7 @@
+package edu.skku.cs;
+
 import com.sun.net.httpserver.HttpServer;
-import httphandler.FixedResponseHandler;
-import httphandler.core.HttpHandlerBase;
+import edu.skku.cs.httphandler.core.HttpHandlerBase;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

@@ -1,4 +1,4 @@
-package httphandler.core;
+package edu.skku.cs.httphandler.core;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;

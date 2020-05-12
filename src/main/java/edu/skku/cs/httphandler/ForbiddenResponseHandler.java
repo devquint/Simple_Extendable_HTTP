@@ -1,9 +1,8 @@
-package httphandler;
+package edu.skku.cs.httphandler;
 
 import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpHandler;
-import httphandler.core.HttpHandlerBase;
-import httphandler.core.ResponseItem;
+import edu.skku.cs.httphandler.core.HttpHandlerBase;
+import edu.skku.cs.httphandler.core.ResponseItem;
 
 public class ForbiddenResponseHandler extends HttpHandlerBase {
 

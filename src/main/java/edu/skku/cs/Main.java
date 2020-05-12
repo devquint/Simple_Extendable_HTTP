@@ -1,10 +1,10 @@
-import com.sun.net.httpserver.HttpServer;
-import httphandler.FixedResponseHandler;
+package edu.skku.cs;
+
+import edu.skku.cs.httphandler.FixedResponseHandler;
+import edu.skku.cs.httphandler.ForbiddenResponseHandler;
+import edu.skku.cs.httphandler.core.HttpHandlerByMethod;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class Main {
     public static final int PORT = 8080;
@@ -15,6 +15,9 @@ public class Main {
         serverManager = new HttpServerManager(HOST, PORT);
 
         serverManager.registerContext("/fixed", new FixedResponseHandler("It's Fixed, not broken anymore."));
+        serverManager.registerContext("/onlyput", new HttpHandlerByMethod(
+                new ForbiddenResponseHandler(), new ForbiddenResponseHandler(),
+                new FixedResponseHandler("Hi, put."), new ForbiddenResponseHandler()));
 
         serverManager.start();
     }

@@ -1,4 +1,4 @@
-package test;
+package edu.skku.cs.test;
 
 import com.google.api.client.http.*;
 import com.google.api.client.testing.http.HttpTesting;
@@ -6,7 +6,8 @@ import com.google.api.client.testing.http.MockHttpTransport;
 import com.google.api.client.testing.http.MockLowLevelHttpRequest;
 import com.google.api.client.testing.http.MockLowLevelHttpResponse;
 import com.sun.net.httpserver.HttpServer;
-import httphandler.FixedResponseHandler;
+import edu.skku.cs.httphandler.FixedResponseHandler;
+import edu.skku.cs.httphandler.ForbiddenResponseHandler;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -19,7 +20,6 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static org.junit.Assert.assertEquals;
@@ -30,8 +30,7 @@ public class MainTest {
     public static final String HOST_IP = "";
     public static final String HOST_HTTP_HTTPS = "http://"; // https일 경우 https://
     public static final String HOST_ADDR = ""; // 별도의 주소가 있을 경우 http(s):// 이외 입력
-    private static HttpServer testServer;
-    private static ExecutorService httpExecutor;
+    public static HttpServerManager serverManager;
 
     @BeforeClass
     public static void serverSetup() throws IOException {
@@ -69,7 +68,11 @@ public class MainTest {
         testServer.removeContext(TEST_FIXED_PATH);
     }
 
-    @Ignore("Template test code for Mocking HTTP response ignored.")
+    serverManager.registerContext("/onlyput", new HttpHandlerByMethod(
+                new ForbiddenResponseHandler(), new ForbiddenResponseHandler(),
+                new FixedResponseHandler("Hi, put."), new ForbiddenResponseHandler()));
+
+    @Ignore("Template edu.skku.cs.test code for Mocking HTTP response ignored.")
     @Test
     public void MockingTestTemplate() throws IOException {
         HttpTransport transport =
