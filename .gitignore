@@ -1,2 +1,4 @@
 
 *.class
+*.class
+target/classes/META-INF/Simple_Extendable_HTTP.kotlin_module
