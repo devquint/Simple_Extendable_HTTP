@@ -2,9 +2,10 @@ package edu.skku.cs.httphandler;
 
 import com.sun.net.httpserver.Headers;
 import edu.skku.cs.httphandler.core.HttpHandlerBase;
+import edu.skku.cs.httphandler.core.HttpStatusCode;
 import edu.skku.cs.httphandler.core.ResponseItem;
 
-public class ForbiddenResponseHandler extends HttpHandlerBase {
+public class ForbiddenResponseHandler extends HttpHandlerBase implements HttpStatusCode {
 
     public static final String DEFAULT_FORBIDDEN_MESSAGE = "403 Forbidden\nYou cannot access to this page";
 
@@ -20,7 +21,7 @@ public class ForbiddenResponseHandler extends HttpHandlerBase {
 
     @Override
     public ResponseItem handler(String body, String method, Headers headers) {
-        return new ResponseItem(403, this.forbiddenMessage);
+        return new ResponseItem(STATUS_FORBIDDEN, this.forbiddenMessage);
     }
 
     @Override

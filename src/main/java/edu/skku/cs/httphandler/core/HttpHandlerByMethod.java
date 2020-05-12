@@ -3,7 +3,7 @@ package edu.skku.cs.httphandler.core;
 import com.sun.net.httpserver.Headers;
 import edu.skku.cs.httphandler.ForbiddenResponseHandler;
 
-public class HttpHandlerByMethod extends HttpHandlerBase {
+public class HttpHandlerByMethod extends HttpHandlerBase implements HttpStatusCode {
 
     public final HttpHandlerBase postHandler;
     public final HttpHandlerBase getHandler;
@@ -31,7 +31,7 @@ public class HttpHandlerByMethod extends HttpHandlerBase {
             case "delete":
                 return deleteHandler.handler(body, method, headers);
             default:
-                return new ResponseItem(404, ResponseItem.ERROR_MESSAGE);
+                return new ResponseItem(STATUS_INTERNAL_SERVER_ERROR, ResponseItem.ERROR_MESSAGE);
         }
     }
 
